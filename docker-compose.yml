@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  hardhat:
+    build:
+      context: .
+      args:
+        - USER_ID=${USER_ID}
+        - GROUP_ID=${GROUP_ID}
+    user: "${USER_ID}:${GROUP_ID}" # ユーザーIDとグループIDを環境変数から取得    
+    volumes:
+      - .:/app
+      - ./node_modules:/app/node_modules
+      - node_cache:/tmp/.cache # tmpディレクトリにマウント
+    ports:
+      - "8545:8545" # Hardhatのデフォルトポート
+    environment:
+      - NODE_ENV=development
+    command: npm run node # package.jsonのscriptsを使用
+
+volumes:
+  node_cache:
