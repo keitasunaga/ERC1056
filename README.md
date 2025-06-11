@@ -89,16 +89,66 @@ docker compose build
 docker compose up -d
 ```
 
+## プロジェクト構造
+
+```
+ERC1056/
+├── contracts/          # スマートコントラクトのソースコード
+│   └── EthereumDIDRegistry.sol
+├── scripts/           # デプロイスクリプト
+├── test/             # Hardhatテストコード
+│   └── EthereumDIDRegistry.test.ts
+├── integration-tests/ # ethr-didライブラリとの統合テスト
+│   ├── src/          # 統合テストのソースコード
+│   │   ├── utils/    # テスト用ユーティリティ
+│   │   └── ethr-did-integration.test.ts
+│   ├── Dockerfile    # 統合テスト用Dockerfile
+│   ├── jest.config.js # Jest設定ファイル
+│   ├── jest-setup.ts # Jestセットアップファイル
+│   └── run-tests.sh  # テスト実行スクリプト
+├── hardhat.config.ts # Hardhat設定ファイル
+├── package.json      # プロジェクト依存関係
+├── Dockerfile        # Docker設定ファイル
+└── docker-compose.yml # Docker Compose設定ファイル
+```
+
+## テスト
+
+このプロジェクトには2種類のテストが含まれています：
+
+### 1. Hardhatテスト
+
+コントラクトの基本機能をテストするための単体テストです。`test`ディレクトリに配置されています。
+
+```bash
+docker compose run --rm hardhat npx hardhat test
+```
+
+特定のテストファイルのみを実行する場合：
+
+```bash
+docker compose run --rm hardhat npx hardhat test test/EthereumDIDRegistry.test.ts
+```
+
+### 2. 統合テスト
+
+ethr-didライブラリとの互換性をテストするための統合テストです。`integration-tests`ディレクトリに配置されています。
+
+```bash
+docker compose run --rm integration-tests
+```
+
+統合テストは以下の機能を検証します：
+- DIDドキュメントの解決
+- オーナーシップの変更
+- デリゲートの追加と失効
+- 属性の設定と失効
+
 ## 開発コマンド
 
 ### コンパイル
 ```bash
 docker compose run --rm hardhat npx hardhat compile
-```
-
-### テスト実行
-```bash
-docker compose run --rm hardhat npx hardhat test
 ```
 
 ### ローカルネットワークの起動
@@ -109,34 +159,6 @@ docker compose run --rm hardhat npx hardhat node
 ### デプロイ
 ```bash
 docker compose run --rm hardhat npx hardhat run scripts/deploy.ts --network <network-name>
-```
-
-## プロジェクト構造
-
-```
-ERC1056/
-├── contracts/          # スマートコントラクトのソースコード
-│   └── EthereumDIDRegistry.sol
-├── scripts/           # デプロイスクリプト
-├── test/             # テストコード
-├── hardhat.config.ts # Hardhat設定ファイル
-├── package.json      # プロジェクト依存関係
-├── Dockerfile        # Docker設定ファイル
-└── docker-compose.yml # Docker Compose設定ファイル
-```
-
-## テスト
-
-テストは`test`ディレクトリに配置されています。以下のコマンドで実行できます：
-
-```bash
-docker compose run --rm hardhat npx hardhat test
-```
-
-特定のテストファイルのみを実行する場合：
-
-```bash
-docker compose run --rm hardhat npx hardhat test test/Lock.ts
 ```
 
 ## 備忘録
