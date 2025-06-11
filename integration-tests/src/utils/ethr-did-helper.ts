@@ -29,12 +29,15 @@ export class EthrDIDHelper {
   private wallet: ethers.Wallet;
   private chainId!: string;
   private registryAddress: string;
-  private networkName: string = 'development';
+  private networkName: string;
 
   constructor(registryAddress: string, customPrivateKey?: string) {
     this.registryAddress = registryAddress;
+    // ネットワーク名を環境変数から取得、デフォルトは'development'
+    this.networkName = process.env.NETWORK_NAME || 'development';
+
     // ENS名前解決をモックしたプロバイダーを使用
-    const providerUrl = process.env.BLOCKCHAIN_URL || 'http://localhost:8545';
+    const providerUrl = process.env.SEPOLIA_RPC_URL || process.env.BLOCKCHAIN_URL || 'http://localhost:8545';
     this.provider = new MockEnsProvider(providerUrl);
 
     // カスタムプライベートキーが提供された場合はそれを使用、そうでなければデフォルトのウォレットを取得
@@ -50,13 +53,22 @@ export class EthrDIDHelper {
       const network = await this.provider.getNetwork();
       this.chainId = network.chainId.toString();
 
+      // 環境変数からCHAIN_IDが指定されている場合はそれを使用
+      if (process.env.CHAIN_ID) {
+        this.chainId = process.env.CHAIN_ID;
+      }
+
       console.log(`Network chainId: ${this.chainId}, networkName: ${this.networkName}`);
       console.log(`Using wallet address: ${this.wallet.address}`);
+      console.log(`Registry address: ${this.registryAddress}`);
+
+      // Sepolia testnetの場合はchainIdを使用、それ以外はnetworkNameを使用
+      const chainNameOrId = this.networkName === 'sepolia' ? parseInt(this.chainId) : this.networkName;
 
       this.ethrDID = new EthrDID({
         identifier: this.wallet.address,
         privateKey: this.wallet.privateKey.slice(2),
-        chainNameOrId: this.networkName, // chainIdではなくnetworkNameを使用
+        chainNameOrId: chainNameOrId,
         provider: this.provider,
         registry: this.registryAddress,
         txSigner: this.wallet
@@ -70,7 +82,7 @@ export class EthrDIDHelper {
             name: this.networkName,
             provider: this.provider,
             registry: this.registryAddress,
-            chainId: this.networkName, // chainIdではなくnetworkNameを使用
+            chainId: chainNameOrId,
           },
         ],
       };

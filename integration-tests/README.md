@@ -20,6 +20,8 @@
 
 ### テスト実行
 
+#### ローカル環境でのテスト（Hardhatノード使用）
+
 ```bash
 # ルートディレクトリから実行
 docker compose run --rm integration-tests
@@ -28,6 +30,27 @@ docker compose run --rm integration-tests
 cd integration-tests
 npm install
 npm test
+```
+
+#### Sepolia Testnetでのテスト
+
+デプロイされたSepolia testnet上のコントラクト（`0x7E0F56D46a53f17d0D57c6f0f0041049A62C5bA4`）を使用してテストを実行：
+
+1. **設定ファイルの準備**
+```bash
+# config/sepolia.env ファイルを編集
+# BLOCKCHAIN_URL にInfuraまたはAlchemyのSepolia RPC URLを設定
+# 例: BLOCKCHAIN_URL=https://sepolia.infura.io/v3/YOUR_PROJECT_ID
+```
+
+2. **テストの実行**
+```bash
+# ルートディレクトリから実行
+docker compose run --rm integration-tests-sepolia
+
+# または
+cd integration-tests
+npm run test:sepolia
 ```
 
 ## ファイル構造

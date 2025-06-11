@@ -23,10 +23,17 @@ describe('ERC1056とethr-didライブラリの統合テスト', () => {
       registryAddress = await contract.getAddress();
       console.log(`Using registry at address: ${registryAddress}`);
 
-      // Hardhatの事前資金付きアカウントを使用（2番目のアカウント）
-      const provider = new ethers.JsonRpcProvider(process.env.BLOCKCHAIN_URL || 'http://localhost:8545');
-      // Hardhatの事前定義された秘密鍵（2番目のアカウント）
-      const privateKey = '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d';
+      // 新しいオーナー用のアカウントを準備
+      const provider = new ethers.JsonRpcProvider(process.env.SEPOLIA_RPC_URL || process.env.BLOCKCHAIN_URL || 'http://localhost:8545');
+
+      // 環境変数から新しいオーナーの秘密鍵を取得
+      let privateKey = process.env.NEW_OWNER_PRIVATE_KEY || '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d';
+
+      // 注意: 本番環境では適切なセキュリティ対策を実装してください
+      if (!process.env.NEW_OWNER_PRIVATE_KEY) {
+        console.warn('NEW_OWNER_PRIVATE_KEY環境変数が設定されていません。デフォルトの秘密鍵を使用します。');
+      }
+
       newOwnerWallet = new ethers.Wallet(privateKey, provider);
       console.log(`新しいオーナーアドレス: ${newOwnerWallet.address}`);
 

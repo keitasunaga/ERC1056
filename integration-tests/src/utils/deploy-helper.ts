@@ -31,7 +31,8 @@ const getContractBytecode = (): string => {
 
 // 環境変数からプロバイダーURLを取得
 const getProviderUrl = (): string => {
-  const url = process.env.BLOCKCHAIN_URL || 'http://localhost:8545';
+  const url = process.env.SEPOLIA_RPC_URL || process.env.BLOCKCHAIN_URL || 'http://localhost:8545';
+  console.log(`Using provider URL: ${url}`);
   return url;
 };
 
@@ -44,7 +45,8 @@ export const getProvider = (): ethers.JsonRpcProvider => {
 // Wallet (署名者) の設定
 export const getWallet = (): ethers.Wallet => {
   const provider = getProvider();
-  const privateKey = process.env.TEST_PRIVATE_KEY || '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80';
+  const privateKey = process.env.SEPOLIA_PRIVATE_KEY || process.env.TEST_PRIVATE_KEY || '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80';
+  console.log(`Using wallet with address: ${new ethers.Wallet(privateKey).address}`);
   return new ethers.Wallet(privateKey, provider);
 };
 

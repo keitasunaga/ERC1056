@@ -47,6 +47,25 @@ services:
       - "hardhat:172.17.0.1" # Dockerホストへのアクセス
     command: /bin/sh -c "chmod +x /app/run-tests.sh && /app/run-tests.sh"
 
+  integration-tests-sepolia:
+    build:
+      context: .
+      dockerfile: integration-tests/Dockerfile
+      args:
+        - USER_ID=${USER_ID}
+        - GROUP_ID=${GROUP_ID}
+    user: "${USER_ID}:${GROUP_ID}"
+    volumes:
+      - ./integration-tests:/app
+      - ./integration-tests/node_modules:/app/node_modules
+      - ./artifacts:/app/artifacts
+      - integration_sepolia_node_cache:/tmp/.cache
+    environment:
+      - NODE_ENV=production
+    networks:
+      - blockchain-network
+    command: /bin/sh -c "chmod +x /app/run-tests-sepolia.sh && /app/run-tests-sepolia.sh"
+
 networks:
   blockchain-network:
     driver: bridge
@@ -54,3 +73,4 @@ networks:
 volumes:
   node_cache:
   integration_node_cache:
+  integration_sepolia_node_cache:

@@ -134,8 +134,17 @@ docker compose run --rm hardhat npx hardhat test test/EthereumDIDRegistry.test.t
 
 ethr-didライブラリとの互換性をテストするための統合テストです。`integration-tests`ディレクトリに配置されています。
 
+#### ローカル環境でのテスト
 ```bash
 docker compose run --rm integration-tests
+```
+
+#### Sepolia Testnetでのテスト
+デプロイされたコントラクトを使用したテスト：
+```bash
+# 1. config/sepolia.env でInfura/Alchemy URLを設定
+# 2. テストを実行
+docker compose run --rm integration-tests-sepolia
 ```
 
 統合テストは以下の機能を検証します：

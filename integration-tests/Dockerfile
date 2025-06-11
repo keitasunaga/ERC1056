@@ -27,6 +27,9 @@ COPY integration-tests/package*.json ./
 # 依存関係をインストール (--no-bin-links フラグを追加して権限問題を回避)
 RUN npm install --no-bin-links
 
+# PATHにnode_modules/.binを追加
+ENV PATH="/app/node_modules/.bin:${PATH}"
+
 # 必要なTypeScript定義ファイルをコピー
 COPY integration-tests/src/globals.d.ts ./src/
 COPY integration-tests/jest-setup.ts ./
