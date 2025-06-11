@@ -144,6 +144,63 @@ docker compose run --rm integration-tests
 - デリゲートの追加と失効
 - 属性の設定と失効
 
+## 🚀 デプロイ情報
+
+### Sepolia Testnet
+
+このERC1056コントラクトは、Sepoliaテストネット上にデプロイされ、Etherscan上でソースコードが検証済みです。
+
+#### 📋 デプロイ詳細
+- **コントラクトアドレス**: `0x7E0F56D46a53f17d0D57c6f0f0041049A62C5bA4`
+- **ネットワーク**: Sepolia Testnet
+- **デプロイアカウント**: `0xE06Dc3b5f06c28D246714610ee638432DFCc6D0c`
+- **デプロイ日時**: 2024年5月19日
+
+#### 🔗 重要なリンク
+- **Etherscan（検証済み）**: [https://sepolia.etherscan.io/address/0x7E0F56D46a53f17d0D57c6f0f0041049A62C5bA4#code](https://sepolia.etherscan.io/address/0x7E0F56D46a53f17d0D57c6f0f0041049A62C5bA4#code)
+- **デプロイトランザクション**: [https://sepolia.etherscan.io/tx/0x57d53fcfed435150bd9b31fe489db86fe347ddb47c40028ae1bafa38cca80813](https://sepolia.etherscan.io/tx/0x57d53fcfed435150bd9b31fe489db86fe347ddb47c40028ae1bafa38cca80813)
+
+#### ⛽ ガス使用量
+- **使用ガス**: 1,637,046 gas
+- **ガス価格**: 8.0 gwei
+- **合計コスト**: 約 0.013 ETH
+
+#### 🧪 動作確認済み機能
+- ✅ `identityOwner` 関数の動作確認
+- ✅ デフォルトオーナー設定の動作確認
+- ✅ Etherscanでのソースコード検証完了
+
+### 使用方法
+
+デプロイされたコントラクトは以下の方法で利用できます：
+
+```javascript
+// ethers.jsを使用した例
+import { ethers } from 'ethers';
+
+const contractAddress = '0x7E0F56D46a53f17d0D57c6f0f0041049A62C5bA4';
+const sepoliaRpcUrl = 'https://sepolia.infura.io/v3/YOUR_INFURA_KEY';
+
+const provider = new ethers.providers.JsonRpcProvider(sepoliaRpcUrl);
+const contract = new ethers.Contract(contractAddress, abi, provider);
+
+// IDのオーナーを取得
+const owner = await contract.identityOwner('0x1234...'); // あなたのアドレス
+console.log('Owner:', owner);
+```
+
+### 新しいネットワークへのデプロイ
+
+他のネットワークにデプロイする場合は、以下のコマンドを実行してください：
+
+```bash
+# Sepoliaテストネットへのデプロイ
+docker compose run --rm hardhat npx hardhat run scripts/deploy-erc1056.ts --network sepolia
+
+# コントラクトの検証
+docker compose run --rm hardhat npx hardhat verify --network sepolia <CONTRACT_ADDRESS>
+```
+
 ## 開発コマンド
 
 ### コンパイル
@@ -158,7 +215,11 @@ docker compose run --rm hardhat npx hardhat node
 
 ### デプロイ
 ```bash
-docker compose run --rm hardhat npx hardhat run scripts/deploy.ts --network <network-name>
+# ERC1056コントラクトのデプロイ（例：Sepoliaテストネット）
+docker compose run --rm hardhat npx hardhat run scripts/deploy-erc1056.ts --network sepolia
+
+# コントラクトの検証
+docker compose run --rm hardhat npx hardhat verify --network sepolia <CONTRACT_ADDRESS>
 ```
 
 ## 備忘録
